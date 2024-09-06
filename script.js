@@ -3,7 +3,7 @@ const boxcountbutton = document.querySelector(".userValue");
 const resetbutton = document.querySelector(".reset");
 const colorbutton = document.querySelector(".colorbutton");
 coloroption = "black";
-let isDrawing = false;
+let isDrawing = true;
 let columns = 20;
 container.style.cssText = `grid-template-columns:repeat(${columns}, 1fr); grid-template-rows:repeat(${columns}, 1fr);`;
 
@@ -37,8 +37,7 @@ function createboxes(number){
         //     }else{
         //         contchild.style.cssText = `background-color:${getRandomRGBColor()};`;
         //     }
-        // })
-
+        // });
 
 
         function applyColor(event) {
@@ -49,9 +48,10 @@ function createboxes(number){
             }
         }
 
+        // Mouse events
         contchild.addEventListener("mousedown", (event) => {
-            isDrawing = true;
             applyColor(event);
+            event.preventDefault(); // Prevent default behavior
         });
 
         contchild.addEventListener("mouseover", (event) => {
@@ -60,23 +60,23 @@ function createboxes(number){
             }
         });
 
+        // Touch events
         contchild.addEventListener("touchstart", (event) => {
             isDrawing = true;
             applyColor(event);
-            event.preventDefault(); 
+            event.preventDefault(); // Prevent default touch behavior
         });
 
         contchild.addEventListener("touchmove", (event) => {
             if (isDrawing) {
                 applyColor(event);
-                event.preventDefault(); 
+                event.preventDefault(); // Prevent default touch behavior
             }
         });
 
         contchild.addEventListener("touchend", () => {
             isDrawing = false;
         });
-
 
 
 
