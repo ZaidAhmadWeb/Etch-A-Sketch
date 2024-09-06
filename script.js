@@ -3,7 +3,7 @@ const boxcountbutton = document.querySelector(".userValue");
 const resetbutton = document.querySelector(".reset");
 const colorbutton = document.querySelector(".colorbutton");
 coloroption = "black";
-
+let isDrawing = false;
 let columns = 20;
 container.style.cssText = `grid-template-columns:repeat(${columns}, 1fr); grid-template-rows:repeat(${columns}, 1fr);`;
 
@@ -31,13 +31,55 @@ function createboxes(number){
     for(let i=0; i < number*number; i++){
         const contchild = document.createElement("div");
         contchild.classList.add("onebox");
-        contchild.addEventListener("mousemove",()=>{
-            if(coloroption == "black"){
-                contchild.style.cssText = "background-color:black;";
-            }else{
-                contchild.style.cssText = `background-color:${getRandomRGBColor()};`;
+        // contchild.addEventListener("mousemove",()=>{
+        //     if(coloroption == "black"){
+        //         contchild.style.cssText = "background-color:black;";
+        //     }else{
+        //         contchild.style.cssText = `background-color:${getRandomRGBColor()};`;
+        //     }
+        // })
+
+
+
+        function applyColor(event) {
+            if (coloroption === "black") {
+                contchild.style.backgroundColor = "black";
+            } else {
+                contchild.style.backgroundColor = getRandomRGBColor();
             }
-        })
+        }
+
+        contchild.addEventListener("mousedown", (event) => {
+            isDrawing = true;
+            applyColor(event);
+        });
+
+        contchild.addEventListener("mouseover", (event) => {
+            if (isDrawing) {
+                applyColor(event);
+            }
+        });
+
+        contchild.addEventListener("touchstart", (event) => {
+            isDrawing = true;
+            applyColor(event);
+            event.preventDefault(); 
+        });
+
+        contchild.addEventListener("touchmove", (event) => {
+            if (isDrawing) {
+                applyColor(event);
+                event.preventDefault(); 
+            }
+        });
+
+        contchild.addEventListener("touchend", () => {
+            isDrawing = false;
+        });
+
+
+
+
         container.appendChild(contchild);
     }
 }
