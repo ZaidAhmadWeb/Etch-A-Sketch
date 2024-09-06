@@ -31,7 +31,7 @@ function createboxes(number){
     for(let i=0; i < number*number; i++){
         const contchild = document.createElement("div");
         contchild.classList.add("onebox");
-        contchild.addEventListener("mouseover",()=>{
+        contchild.addEventListener("mousemove",()=>{
             if(coloroption == "black"){
                 contchild.style.cssText = "background-color:black;";
             }else{
