@@ -27,61 +27,132 @@ colorbutton.addEventListener("click", () => {
 });
 
 
-function createboxes(number){
-    for(let i=0; i < number*number; i++){
+// function createboxes(number){
+//     for(let i=0; i < number*number; i++){
+//         const contchild = document.createElement("div");
+//         contchild.classList.add("onebox");
+//         // contchild.addEventListener("mousemove",()=>{
+//         //     if(coloroption == "black"){
+//         //         contchild.style.cssText = "background-color:black;";
+//         //     }else{
+//         //         contchild.style.cssText = `background-color:${getRandomRGBColor()};`;
+//         //     }
+//         // });
+
+
+//         function applyColor(event) {
+//             if (coloroption === "black") {
+//                 contchild.style.backgroundColor = "black";
+//             } else {
+//                 contchild.style.backgroundColor = getRandomRGBColor();
+//             }
+//         }
+
+//         // Mouse events
+//         contchild.addEventListener("mousedown", (event) => {
+//             applyColor(event);
+//             event.preventDefault(); // Prevent default behavior
+//         });
+
+//         contchild.addEventListener("mouseover", (event) => {
+//             if (isDrawing) {
+//                 applyColor(event);
+//             }
+//         });
+
+//         // Touch events
+//         contchild.addEventListener("touchstart", (event) => {
+//             isDrawing = true;
+//             applyColor(event);
+//             event.preventDefault(); // Prevent default touch behavior
+//         });
+
+//         contchild.addEventListener("touchmove", (event) => {
+//             if (isDrawing) {
+//                 applyColor(event);
+//                 event.preventDefault(); // Prevent default touch behavior
+//             }
+//         });
+
+//         contchild.addEventListener("touchend", () => {
+//             isDrawing = false;
+//         });
+
+
+
+//         container.appendChild(contchild);
+//     }
+// }
+
+
+
+function applyColor(cell) {
+    if (coloroption === "black") {
+        cell.style.backgroundColor = "black";
+    } else {
+        cell.style.backgroundColor = getRandomRGBColor();
+    }
+}
+
+function getCellAtPosition(x, y) {
+    const rect = container.getBoundingClientRect();
+    const cellSize = rect.width / columns;
+    const col = Math.floor((x - rect.left) / cellSize);
+    const row = Math.floor((y - rect.top) / cellSize);
+    return container.querySelector(`.onebox:nth-child(${row * columns + col + 1})`);
+}
+
+function handleStart(event) {
+    isDrawing = true;
+    const x = event.clientX || event.touches[0].clientX;
+    const y = event.clientY || event.touches[0].clientY;
+    lastCell = getCellAtPosition(x, y);
+    if (lastCell) {
+        applyColor(lastCell);
+    }
+    event.preventDefault();
+}
+
+function handleMove(event) {
+    if (!isDrawing) return;
+    const x = event.clientX || event.touches[0].clientX;
+    const y = event.clientY || event.touches[0].clientY;
+    const currentCell = getCellAtPosition(x, y);
+    if (currentCell && currentCell !== lastCell) {
+        applyColor(currentCell);
+        lastCell = currentCell;
+    }
+    event.preventDefault();
+}
+
+function handleEnd() {
+    isDrawing = false;
+    lastCell = null;
+}
+
+function createboxes(number) {
+    container.style.gridTemplateColumns = `repeat(${number}, 1fr)`;
+    container.style.gridTemplateRows = `repeat(${number}, 1fr)`;
+
+    // Clear existing boxes
+    container.innerHTML = '';
+
+    for (let i = 0; i < number * number; i++) {
         const contchild = document.createElement("div");
         contchild.classList.add("onebox");
-        // contchild.addEventListener("mousemove",()=>{
-        //     if(coloroption == "black"){
-        //         contchild.style.cssText = "background-color:black;";
-        //     }else{
-        //         contchild.style.cssText = `background-color:${getRandomRGBColor()};`;
-        //     }
-        // });
-
-
-        function applyColor(event) {
-            if (coloroption === "black") {
-                contchild.style.backgroundColor = "black";
-            } else {
-                contchild.style.backgroundColor = getRandomRGBColor();
-            }
-        }
-
-        // Mouse events
-        contchild.addEventListener("mousedown", (event) => {
-            applyColor(event);
-            event.preventDefault(); // Prevent default behavior
-        });
-
-        contchild.addEventListener("mouseover", (event) => {
-            if (isDrawing) {
-                applyColor(event);
-            }
-        });
-
-        // Touch events
-        contchild.addEventListener("touchstart", (event) => {
-            isDrawing = true;
-            applyColor(event);
-            event.preventDefault(); // Prevent default touch behavior
-        });
-
-        contchild.addEventListener("touchmove", (event) => {
-            if (isDrawing) {
-                applyColor(event);
-                event.preventDefault(); // Prevent default touch behavior
-            }
-        });
-
-        contchild.addEventListener("touchend", () => {
-            isDrawing = false;
-        });
-
-
 
         container.appendChild(contchild);
     }
+
+    // Attach event listeners
+    container.addEventListener("mousedown", handleStart);
+    container.addEventListener("mousemove", handleMove);
+    container.addEventListener("mouseup", handleEnd);
+    container.addEventListener("mouseleave", handleEnd);
+
+    container.addEventListener("touchstart", handleStart);
+    container.addEventListener("touchmove", handleMove);
+    container.addEventListener("touchend", handleEnd);
 }
 
 
